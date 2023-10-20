@@ -37,15 +37,15 @@ defineVirtualDevice("Room1_L1",  {
 
         
 defineVirtualDevice("Room1_roll",  {
-  title: "Гостинная основной свет",
+  title: "Гостинная Шторы ",
  	cells: {
     
       tag: {
         title: "tag",
-			type: "range",
-	    value: 50,
+		type: "range",
+	    value: 55,
         max: 100,
-        min: 0
+        min: 1
         },// tag
       
       up: {
@@ -65,7 +65,7 @@ defineVirtualDevice("Room1_roll",  {
         },// dn
       
       delay_Timer: {
-        title: "tag",
+        title: "Delay",
 			type: "range",
 	    value: 20,
         max: 30,
@@ -84,6 +84,7 @@ defineVirtualDevice("Room1_roll",  {
  	var timer2s_up = false; 
  	var timer_id = null; 
 	var Timer_2s_id = null; 
+	var  timer_1s_id= null; 
 
 	var device_roll = "wb-mr6cu_32"; 
 	var rele_up = "K5"
@@ -121,7 +122,7 @@ defineVirtualDevice("Room1_roll",  {
        	
      timer2s_up = false;
 		 if ( roll_condition  > newValue ) { // Проверяем куда бечь .
-			log(" Room_roll/tag   start  UP,roll_condition= {}, newValue= {}, delay_Timer= {} , Ttimer = {}" ,roll_condition,newValue,dev[_Room_delay],((roll_condition - newValue )* dev[_Room_delay]*10) );
+			log(" Проверяем куда бечь - Уставка меньше текущего значения, открываем шторы  ,roll_condition= {}, newValue= {}, delay_Timer= {} , Ttimer = {}" ,roll_condition,newValue,dev[_Room_delay],((roll_condition - newValue )* dev[_Room_delay]*10) );
            // Уставка меньше текущего значения 
 			//  открываем шторы 
 		 
@@ -132,6 +133,8 @@ defineVirtualDevice("Room1_roll",  {
              log("Room_roll/tag   stop  UP");
 			 dev[device_roll][rele_up]  = false;
              roll_condition=newValue;
+             log(" Текущее состояние  ,roll_condition= {}",roll_condition);
+          
 		     },((roll_condition - newValue )* dev[_Room_delay]*10));
 		  }	//if 
 		else 		{
@@ -147,7 +150,9 @@ defineVirtualDevice("Room1_roll",  {
 		timer_id=setTimeout(function () {
           log("Room1_roll/tag   stop  DN");
 			 dev[device_roll][rele_dn]  = false;
-			roll_condition=newValue;          
+			roll_condition=newValue;        
+          log(" Текущее состояние  ,roll_condition= {}",roll_condition);
+          
 			},((newValue - roll_condition)* dev[_Room_delay]*10)); 
          }	 
    }   
@@ -245,47 +250,67 @@ defineVirtualDevice("Room1_roll",  {
 ///
   
 defineRule("UP", {	
-  	whenChanged:   device_input_button_up,
+  	whenChanged:   device_input_button_up, 
     then: function (newValue, devName, cellName) {
-    log("Press button UP  - 0 "); 
+    
+      log("Room1_roll press up, timer= {},dev[Room1_roll/delay_Timer] = {} , roll_condition= {}",((100-roll_condition)* dev[_Room_delay]*10),dev[_Room_delay],roll_condition);
 	
-	if (newValue){   // кнопку нажали 
-	log("Press button UP  "); // вывод сообщения в лог 
+     if (newValue){   // кнопку нажали 
+		log("Press button UP  "); // вывод сообщения в лог 
       
-	if (dev[device_roll][rele_dn]){   //проверка на работу двигателя в противофазе .
-		dev[device_roll][rele_dn]= false;  // Отключили двигатель на закрывание 
-		f_button_press=true;							//взвели флаг на ожидание отпускания кнопки .
-		clearTimeout(timer_id);
-        timer2s_up = false;
-      return;
-    }
+			if (dev[device_roll][rele_dn]){   //проверка на работу двигателя в противофазе .
+				log("проверка на работу двигателя в противофазе - 1 "); // вывод сообщения в лог 
+      			dev[device_roll][rele_dn]= false;  // Отключили двигатель на закрывание 
+				f_button_press=true;							//взвели флаг на ожидание отпускания кнопки .
+	 			clearTimeout(timer_id);
+      			clearTimeout( timer_1s_id);
+        		timer2s_up = false;
+    			log("проверка на работу двигателя в противофазе - 2 "); // вывод сообщения в лог 
+    	    	return;
+  			  	}
 
-	if (dev[device_roll][rele_up]){   //проверка на работу двигателя в ту же сторону.
-		dev[device_roll][rele_up] = false;  	// Отключили двигатель на открытие 
-		f_button_press=true;							//взвели флаг на ожидание отпускания кнопки .
-		clearTimeout(timer_id);
-      	timer2s_up = false;
-      return;
-	}
+			if (dev[device_roll][rele_up]){   //проверка на работу двигателя в ту же сторону.
+				log("проверка на работу двигателя в ту же сторону. - 1 "); // вывод сообщения в лог 
+      			dev[device_roll][rele_up] = false;  	// Отключили двигатель на открытие 
+				f_button_press=true;							//взвели флаг на ожидание отпускания кнопки .
+				clearTimeout(timer_id);
+      			clearTimeout( timer_1s_id);
+      			timer2s_up = false;
+				log("проверка на работу двигателя в ту же сторону. - 1 "); // вывод сообщения в лог 
+      			return;
+				}
 	
+       
+       if (roll_condition < 1) {
+       roll_condition=0;
+         return;
+       }
      
-    dev[device_roll][rele_dn] = false;  // запустили привод на открытие 
-	dev[device_roll][rele_up] = true;  // запустили привод на открытие 
+    	dev[device_roll][rele_dn] = false;  // запустили привод на открытие 
+		dev[device_roll][rele_up] = true;  // запустили привод на открытие 
+	
+    	timer_1s_id= setInterval(function () {
+	 			roll_condition=roll_condition - (100/dev[_Room_delay] ); 
+      			log("UP Roll_condition= {}",roll_condition);
+        }, 1000);
 	
       
-     timer2s_up=true;
-	 timer_2s_id=setTimeout(function () {
-		 timer2s_up = false;
+      	timer2s_up=true;
+	 	timer_2s_id=setTimeout(function () {
+			 timer2s_up = false;
 		}, 1500);
 	
-	 timer_id=setTimeout(function () {
-		 dev[device_roll][rele_up] = false;
-	 	 },dev["Room1/rool_delay_Timer"]*1000);
+	 	timer_id=setTimeout(function () {
+			dev[device_roll][rele_up] = false;
+       		clearTimeout(timer_1s_id);
+            roll_condition=0;
+	 	 },((roll_condition)* dev[_Room_delay]*10)); 
 	}
           
 	else  {   // кнопку отпустили 
 		
-      	log("Release button UP  ");
+      	
+      log("Room1_Release press up, timer= {},dev[Room1_roll/delay_Timer] = {} , roll_condition= {}",((100-roll_condition)* dev[_Room_delay]*10),dev[_Room_delay],roll_condition);
       
 	if (f_button_press){      // 
 		f_button_press=false;
@@ -295,11 +320,12 @@ defineRule("UP", {
 		if (!timer2s_up){  	// 
 			dev[device_roll][rele_up] = false;	//  кнопку отпустили через 2  сек.
 			clearTimeout(timer_id);
-          log("!timer2s_up");								// Откл. привод
+          	clearTimeout(timer_1s_id);
+          log("кнопку отпустили через 2  сек");								// Откл. привод
 		}
 		else{
-			timer2s_up=false;
-          	}
+				timer2s_up=false;
+         	}
 	}	
 }
 	
@@ -318,7 +344,8 @@ defineRule("DN", {
       
 	if (dev[device_roll][rele_up]){   //проверка на работу двигателя в противофазе .
 		dev[device_roll][rele_up]= false;  // Отключили двигатель на закрывание 
-		f_button_press=true;							//взвели флаг на ожидание отпускания кнопки .
+	 clearTimeout(timer_1s_id);
+      f_button_press=true;							//взвели флаг на ожидание отпускания кнопки .
 		log("wb-mr6cu_32/K5 - is work ");
     	clearTimeout(timer_id);
         timer2s_up = false;
@@ -331,10 +358,23 @@ defineRule("DN", {
 		f_button_press=true;							//взвели флаг на ожидание отпускания кнопки .
 		log("dev[device_roll][rele_dn]- is work ");
     	clearTimeout(timer_id);
-      	timer2s_up = false;
+       clearTimeout(timer_1s_id);
+      timer2s_up = false;
       return;
 	}
-
+      
+      
+	 timer_1s_id= setInterval(function () {
+		roll_condition=roll_condition + (100/dev[_Room_delay] )  ; 
+     }, 1000);
+      
+      
+ 
+       if (roll_condition > 99) {
+       		roll_condition=100;
+        	return;
+       }
+      
 	dev[device_roll][rele_up] = false;
 	dev[device_roll][rele_dn] = true;  // запустили привод на открытие 
       
@@ -345,7 +385,9 @@ defineRule("DN", {
 	
 	 timer_id=setTimeout(function () {
 		 dev[device_roll][rele_dn] = false;
-	 	 },dev["Room1/rool_delay_Timer"]*1000);
+    	 clearTimeout(timer_1s_id);
+       roll_condition=100;   
+	 	 },((100 - roll_condition)* dev[_Room_delay]*10));
 	}
           
 	else  {   // кнопку отпустили 
@@ -360,6 +402,7 @@ defineRule("DN", {
 		if (!timer2s_up){  	//    
 			dev[device_roll][rele_dn] = false;	//  кнопку отпустили после 2  сек.
 			clearTimeout(timer_id);
+          clearTimeout(timer_1s_id);
           log("!timer2s_DN");								// Откл. привод
 		}
 		else{
