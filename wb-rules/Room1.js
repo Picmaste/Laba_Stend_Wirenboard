@@ -1,4 +1,3 @@
-
 defineVirtualDevice("Room1_L2",  {
   
   title: "Гостинная Димируемая подсветка ",
@@ -21,7 +20,6 @@ defineVirtualDevice("Room1_L2",  {
       
         }  // calls  
 });    //      Room1_L2
-
      
 defineVirtualDevice("Room1_L1",  {
   title: "Гостинная основной свет",
