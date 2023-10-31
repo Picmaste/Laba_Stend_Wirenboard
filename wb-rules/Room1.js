@@ -46,20 +46,20 @@ defineVirtualDevice("Room1_roll",  {
     
       tag: {
         title: "tag",
-		type: "range",
-	    value: 55,
+		    type: "range",
+	      value: 55,
         max: 100,
         min: 1
         },// tag
       
       up: {
         title: "Roll UP",
-		type: "switch",
-		value: false
+		    type: "switch",
+		    value: false
         },// up
       stop: {
         title: "Roll STOP",
-		type: "switch",
+		    type: "switch",
 		value: false
         },//stop
       dn: {
@@ -95,7 +95,7 @@ defineVirtualDevice("Room1_roll",  {
 	var rele_dn = "K6"
 	var no_dubl = 0;
     
-    var device_input_button_up = "wb-gpio/EXT1_IN6";
+   var device_input_button_up = "wb-gpio/EXT1_IN6";
 	var device_input_button_dn = "wb-gpio/EXT1_IN7"
 	
     var roll_condition=dev["Room1_roll/tag"];
@@ -159,7 +159,8 @@ defineVirtualDevice("Room1_roll",  {
           
 			},((newValue - roll_condition)* dev[_Room_delay]*10)); 
          }	 
-   }   
+   
+        }   
     });
     
     
