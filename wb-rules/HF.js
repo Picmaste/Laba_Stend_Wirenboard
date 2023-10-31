@@ -53,7 +53,7 @@ function FH_RUN () {
     log("Температура выше уставки, выключаем реле");
     _fh_rele=false;
     }
-    (_fh_condition < _fh_set-_fh_delta) {
+  if  (_fh_condition < _fh_set-_fh_delta) {
       _fh_rele=true;
       log("Температура ниже уставки, включаем реле");
       }
