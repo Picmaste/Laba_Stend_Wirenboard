@@ -63,14 +63,13 @@ defineRule({
     if (newValue) {
       log ("Включаем модуль тёплых полов");
       log(" Температура = {}, Уставка = {} ", _fh_condition ,_fh_set  );
-      timer_id=setInterval(FH_RUN,_fh_frequency);
+      timer_id = setInterval(FH_RUN,_fh_frequency);
       return;
     }
 
     log ("Выключаем модуль тёплых полов");
        dev[_fh_rele]=true;
-   сlearTimeout(timer_id);
-     
+        clearTimeout (timer_id);
  }
  });
 
