@@ -16,7 +16,7 @@ defineVirtualDevice("floor_heating1",  {
     
       switch: {
         title: "ON/OFF",
-		  type: "switch",
+		   type: "switch",
 		  value: false
 
         },// switch
@@ -37,7 +37,7 @@ defineVirtualDevice("floor_heating1",  {
 
 var _fh_condition=dev["/devices/wb-w1/controls/28-95e1ae2ecdff"];   // Текущее состояние  температуры
 var _fh_frequency=1000;   // частота в мс.
-var _fh_ON_OFF=dev["floor_heating1/switch"];  
+var _fh_ON_OFF="floor_heating1/switch";  
 
 var _fh_set=dev["floor_heating1/temp"];         // Уставка 
 var _fh_delta=3;         // Delta
@@ -48,7 +48,10 @@ var _fh_rele= dev["/devices/wb-mr6c-nc_109/controls/K6"];
 
 function FH_RUN () {
 
-  log("Проверка температуры тёплого пола ");
+
+
+
+  log("Проверка температуры тёплого пола  Температура = {}, Уставка = {} ", _fh_condition ,_fh_set  );
   if  (_fh_condition > _fh_set+_fh_delta) {
     log("Температура выше уставки, выключаем реле");
     _fh_rele=false;
@@ -57,7 +60,7 @@ function FH_RUN () {
       _fh_rele=true;
       log("Температура ниже уставки, включаем реле");
       }
-}/
+};
 
 defineRule({
   whenChanged: _fh_ON_OFF,
@@ -69,6 +72,7 @@ defineRule({
       return;
     }
 
+    log ("Выключаем модуль тёплых полов");
     сlearTimeout(timer_id);
     fh_rele=false;  
  }
