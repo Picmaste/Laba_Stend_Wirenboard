@@ -7,10 +7,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
 defineVirtualDevice("floor_heating1",  {
   
   title: "Тёплый пол на кухни",
@@ -38,7 +34,7 @@ defineVirtualDevice("floor_heating1",  {
 
 
 var _fh_condition=dev["wb-w1/28-95e1ae2ecdff"];   // Текущее состояние  температуры
-var _fh_frequency=10000;   // частота в мс.
+var _fh_frequency=5000;   // частота в мс.
 var _fh_ON_OFF="floor_heating1/switch";  
 
 var _fh_set=dev["floor_heating1/temp"];         // Уставка 
@@ -67,14 +63,16 @@ defineRule({
     if (newValue) {
       log ("Включаем модуль тёплых полов");
       log(" Температура = {}, Уставка = {} ", _fh_condition ,_fh_set  );
-      timer_id= setInterval(FH_RUN,_fh_frequency);
+      timer_id=setInterval(FH_RUN,_fh_frequency);
       return;
     }
 
     log ("Выключаем модуль тёплых полов");
-    сlearTimeout(timer_id);
-        dev[_fh_rele]=true;
+       dev[_fh_rele]=true;
+   сlearTimeout(timer_id);
+     
  }
  });
+
 
 
