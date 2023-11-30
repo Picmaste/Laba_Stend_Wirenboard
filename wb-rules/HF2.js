@@ -33,7 +33,7 @@ defineVirtualDevice("floor_heating2",  {
   // Переменные 
   
   var _fh_namber="ванной";
-  var _fh_condition="wb-w1/28-d8e1ae2d89ff";   // Текущее состояние  температуры
+  var _fh_condition="dev[/"wb-w1/28-d8e1ae2d89ff/"]";   // Текущее состояние  температуры
   var _fh_frequency=5000;   // частота в мс.
   var _fh_ON_OFF="floor_heating2/switch";  
   
@@ -45,13 +45,13 @@ defineVirtualDevice("floor_heating2",  {
   //
   
   function FH_RUN1 () {
-    log("Проверка температуры тёплого пола в  {},  Температура = {}, Уставка = {} ",_fh_namber , dev[ _fh_condition ] ,_fh_set  );
-     if  (dev[ _fh_condition ] > _fh_set+_fh_delta) {
+    log("Проверка температуры тёплого пола в  {},  Температура = {}, Уставка = {} ",_fh_namber ,  _fh_condition  ,_fh_set  );
+     if  (_fh_condition > _fh_set+_fh_delta) {
       log("Температура в {} выше уставки, выключаем реле ", _fh_namber);
       dev[_fh_rele]=false;
       return;
       }
-    if  ( dev[ _fh_condition ] < _fh_set-_fh_delta) {
+    if  (_fh_condition < _fh_set-_fh_delta) {
         dev[_fh_rele]=true;
         log("Температура в {} ниже уставки, включаем реле", _fh_namber);
         }
