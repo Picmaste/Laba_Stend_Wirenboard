@@ -45,15 +45,15 @@ defineVirtualDevice("floor_heating2",  {
   //
   
   function FH_RUN () {
-    log("Проверка температуры тёплого пола в  {} ,  Температура = {}, Уставка = {} ",_fh_namber , _fh_condition ,_fh_set  );
+    log("Проверка температуры тёплого пола в  {},  Температура = {}, Уставка = {} ",_fh_namber , _fh_condition ,_fh_set  );
      if  (_fh_condition > _fh_set+_fh_delta) {
-      log("Температура выше уставки, выключаем реле");
+      log("Температура в {} выше уставки, выключаем реле ", _fh_namber);
       dev[_fh_rele]=false;
       return;
       }
-    if  ( dev["wb-w1/28-95e1ae2ecdff"] < _fh_set-_fh_delta) {
+    if  ( _fh_condition < _fh_set-_fh_delta) {
         dev[_fh_rele]=true;
-        log("Температура ниже уставки, включаем реле");
+        log("Температура в {} ниже уставки, включаем реле", _fh_namber);
         }
   };
  /*
@@ -77,13 +77,13 @@ defineVirtualDevice("floor_heating2",  {
     whenChanged: _fh_ON_OFF,
    then: function (newValue, devName, cellName) {
       if (newValue) {
-        log ("Включаем модуль тёплых полов");
-        log(" Температура = {}, Уставка = {} ", _fh_condition ,_fh_set  );
+        log ("Включаем модуль тёплых полов в {} , Температура  = {}, Уставка = {}  ",_fh_namber,_fh_condition ,_fh_set );
+        
         timer_id = setInterval(FH_RUN,_fh_frequency);
         return;
       }
   
-      log ("Выключаем модуль тёплых полов");
+      log ("Выключаем модуль тёплых полов  в {}", _fh_namber);
          dev[_fh_rele]=false;
           clearTimeout (timer_id);
    }
