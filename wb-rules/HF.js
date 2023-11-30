@@ -31,7 +31,7 @@ defineVirtualDevice("floor_heating1",  {
 
 // Переменные 
 
-
+var _fh_namber="кухни";
 var _fh_condition=dev["wb-w1/28-95e1ae2ecdff"];   // Текущее состояние  температуры
 var _fh_frequency=5000;   // частота в мс.
 var _fh_ON_OFF="floor_heating1/switch";  
@@ -44,7 +44,7 @@ var _fh_rele= "wb-mr6c-nc_109/K6";
 //
 
 function FH_RUN () {
-  log("Проверка температуры тёплого пола  Температура = {}, Уставка = {} ", dev["wb-w1/28-95e1ae2ecdff"] ,_fh_set  );
+  log("Проверка температуры тёплого пола в {} ,  Температура = {}, Уставка = {} ",_fh_namber , dev["wb-w1/28-95e1ae2ecdff"] ,_fh_set  );
   if  (dev["wb-w1/28-95e1ae2ecdff"]> _fh_set +_fh_delta) {
     log("Температура выше уставки, выключаем реле");
     dev[_fh_rele]=true;
