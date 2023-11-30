@@ -32,45 +32,45 @@ defineVirtualDevice("floor_heating1",  {
 // Переменные 
 
 var _fh_namber="кухни";
-var _fh_condition=dev["wb-w1/28-95e1ae2ecdff"];   // Текущее состояние  температуры
-var _fh_frequency=5000;   // частота в мс.
+var _fh_condition="wb-w1/28-95e1ae2ecdff";   // Текущее состояние  температуры
+var _fh_frequency=10000;   // частота в мс.
 var _fh_ON_OFF="floor_heating1/switch";  
 
-var _fh_set = dev ["floor_heating1/temp"];         // Уставка 
+var _fh_set = "floor_heating1/temp";         // Уставка 
 var _fh_delta=1;         // Delta
 var timer_id = null;
 var _fh_rele= "wb-mr6c-nc_109/K6";
 
 //
 
-function FH_RUN () {
-  log("Проверка температуры тёплого пола в {} ,  Температура = {}, Уставка = {} ",_fh_namber , dev["wb-w1/28-95e1ae2ecdff"] ,_fh_set  );
-  if  (dev["wb-w1/28-95e1ae2ecdff"]> _fh_set +_fh_delta) {
-    log("Температура выше уставки, выключаем реле");
-    dev[_fh_rele]=true;
-    return;
-    }
-  if  ( dev["wb-w1/28-95e1ae2ecdff"] < _fh_set -_fh_delta) {
-      dev[_fh_rele]=false;
-      log("Температура ниже уставки, включаем реле");
+
+  defineRule({
+    whenChanged: _fh_ON_OFF,
+   then: function (newValue, devName, cellName) {
+      if (newValue) {
+        log ("Включаем модуль тёплых полов в {} , Температура  = {}, Уставка = {}  ",_fh_namber,dev[_fh_condition], dev[_fh_set] );
+        
+       timer_id = setInterval(function () {
+          log("Проверка температуры тёплого пола в  {},  Температура = {}, Уставка = {} ",_fh_namber , dev[_fh_condition],dev[_fh_set]  );
+           if  (dev[ _fh_condition ] > dev[_fh_set]+_fh_delta) {
+            log("Температура в {} выше уставки, выключаем реле ", _fh_namber);
+            dev[_fh_rele]=true;
+            return;
+            }
+          if  ( dev[ _fh_condition ] < dev[_fh_set]-_fh_delta) {
+              dev[_fh_rele]=false;
+              log("Температура в {} ниже уставки, включаем реле", _fh_namber);
+              return;
+              }
+        },_fh_frequency);
+
+        return;
       }
-};
-
-defineRule({
-  whenChanged: _fh_ON_OFF,
- then: function (newValue, devName, cellName) {
-    if (newValue) {
-      log ("Включаем модуль тёплых полов");
-      log(" Температура = {}, Уставка = {} ",  dev["wb-w1/28-95e1ae2ecdff"] ,_fh_set  );
-      timer_id = setInterval(FH_RUN,_fh_frequency);
-      return;
-    }
-
-    log ("Выключаем модуль тёплых полов");
-       dev[_fh_rele]=true;
-        clearTimeout (timer_id);
- }
- });
-
-
+  
+      log ("Выключаем модуль тёплых полов  в {}", _fh_namber);
+         dev[_fh_rele]=true;
+          clearTimeout (timer_id);
+   }
+   });
+  
 
