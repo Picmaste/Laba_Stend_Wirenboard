@@ -44,7 +44,7 @@ defineVirtualDevice("floor_heating2",  {
   
   //
   
-  function FH_RUN () {
+  function FH_RUN1 () {
     log("Проверка температуры тёплого пола в  {},  Температура = {}, Уставка = {} ",_fh_namber , _fh_condition ,_fh_set  );
      if  (_fh_condition > _fh_set+_fh_delta) {
       log("Температура в {} выше уставки, выключаем реле ", _fh_namber);
@@ -79,7 +79,7 @@ defineVirtualDevice("floor_heating2",  {
       if (newValue) {
         log ("Включаем модуль тёплых полов в {} , Температура  = {}, Уставка = {}  ",_fh_namber,_fh_condition ,_fh_set );
         
-        timer_id = setInterval(FH_RUN,_fh_frequency);
+        timer_id = setInterval(FH_RUN1,_fh_frequency);
         return;
       }
   
