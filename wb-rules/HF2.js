@@ -40,7 +40,7 @@ defineVirtualDevice("floor_heating2",  {
   var _fh_set=dev["floor_heating2/temp"];         // Уставка 
   var _fh_delta=1;         // Delta
   var timer_id = null;
-  var _fh_rele= "wb-mr6c_34/K3";
+  var _fh_rele= "wb-mr6cu_34/K3";
   
   //
   
