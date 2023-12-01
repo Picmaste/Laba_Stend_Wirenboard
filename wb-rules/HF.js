@@ -8,7 +8,7 @@
 
 defineVirtualDevice("floor_heating1",  {
   
-  title: "Тёплый пол на Гостинная",
+  title: "Тёплый пол Гостинная",
  	cells: {
     
       switch: {
